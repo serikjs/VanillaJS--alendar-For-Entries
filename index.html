@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<div class="main" id="app">
+			<div class="wrapper">
+				<div class="calendar">
+					<div class="calendar__header">
+						<p class="calendar__this-day">{{currentWeekDay}}</p>
+						<p class="calendar__date">{{currentDate}}</p>
+						<div class="calendar__month">
+							{{currentYearMonth}}
+
+							<button
+								class="calendar__btn calendar__btn_next"
+								@click="nextMonthClick"
+							>
+								next
+							</button>
+							<button
+								class="calendar__btn calendar__btn_prev"
+								@click="prevMonthClick"
+							>
+								prev
+							</button>
+						</div>
+						<div class="calendar__days">
+							<p class="calendar__day">Пн</p>
+							<p class="calendar__day">Вт</p>
+							<p class="calendar__day">Ср</p>
+							<p class="calendar__day">Чт</p>
+							<p class="calendar__day">Пн</p>
+							<p class="calendar__day">Сб</p>
+							<p class="calendar__day">Вс</p>
+						</div>
+					</div>
+					<div class="calendar__body">
+						<template v-for="item in calendar">
+							<span
+								class="calendar__body-day"
+								:class="[item.class,{'calendar__body-day_clicked':ifClikedDay(item.date) && item.current}]"
+								@click="item.current && isWorkDay(item.date) ? dayClick(item.date) : null"
+								:key="item.date.toLocaleString()"
+								>{{item.date.getDate()}}</span
+							>
+						</template>
+					</div>
+				</div>
+				<div v-if="showDayPopap" class="current-day">
+					<form @submit.prevent="formSubmite">
+						<template v-if="popapStep === 0">
+							<p class="current-day__date">{{clicedDate}}</p>
+							<label for="typeWork">Тип записи:</label>
+							<select
+								class="current-day__select"
+								name="typeWork"
+								id="typeWork"
+								v-model="personDataType"
+							>
+								<option v-for="item in settings.workTypes" :value="item">
+									{{item.name}}
+								</option>
+							</select>
+							<p class="current-day__mb">Приблизительно {{mbTime}}</p>
+
+							<label for="timesWork">Время записи:</label>
+							<select
+								class="current-day__select"
+								name="timesWork"
+								id="timesWork"
+								v-model="personDataTime"
+							>
+								<option
+									v-for="item in workTimes[personDataType.name]"
+									:value="item"
+								>
+									{{getTimeToDate(item.start)}}
+								</option>
+							</select>
+
+							<button
+								class="current-day__btn"
+								:disabled="isPopapBtnDisabled"
+								@click.prevent="nextPopapStep"
+							>
+								Далее
+							</button>
+						</template>
+						<template v-if="popapStep === 1">
+							<p class="current-day__date">{{clicedDate}}</p>
+							<label for="popapName">Ваше имя:</label>
+							<input
+								class="current-day__input"
+								type="text"
+								name="name"
+								id="popapName"
+								v-model="personDataName"
+							/>
+							<label for="popapTel">Ваш номер телефона:</label>
+							<input
+								class="current-day__input"
+								type="tel"
+								name="tel"
+								id="popapTel"
+								v-model="personDataTel"
+							/>
+							<button
+								type="submit"
+								class="current-day__btn"
+								:disabled="isPopapBtnDisabled"
+							>
+								Записаться
+							</button>
+						</template>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<script src="js/vue2.js"></script>
+		<script src="js/main.js"></script>
+	</body>
+</html>
