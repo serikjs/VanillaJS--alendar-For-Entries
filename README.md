@@ -1,1 +1,0 @@
-# VanillaJS--alendar-For-Entries
